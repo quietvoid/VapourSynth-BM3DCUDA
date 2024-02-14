@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 3.16)
 
 project(BM3DHIP VERSION 2.6 LANGUAGES CXX)
 
-find_package(HIP REQUIRED CONFIG)
+find_package(ROCM CONFIG QUIET PATHS /opt/rocm)
+list(APPEND CMAKE_MODULE_PATH ${ROCM_PATH}/lib/cmake/hip /opt/rocm/lib/cmake/hip)
+list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/lib/cmake/hip /opt/rocm /opt/rocm/llvm /opt/rocm/hip)
+
+find_package(HIP REQUIRED CONFIG PATHS ${HIP_PATH} ${ROCM_PATH} /opt/rocm)
 
 add_library(bm3dhip_source OBJECT source.cpp)
 target_include_directories(bm3dhip_source PRIVATE 
     ${VAPOURSYNTH_INCLUDE_DIRECTORY}
-    ${hip_INCLUDE_DIRS})
+    ${HIP_INCLUDE_DIRS})
 set_target_properties(bm3dhip_source PROPERTIES 
     CXX_EXTENSIONS OFF
     POSITION_INDEPENDENT_CODE ON
